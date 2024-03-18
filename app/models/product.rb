@@ -1,7 +1,10 @@
 class Product < ApplicationRecord
   belongs_to :category
-  def self.ransackable_attributes(auth_object = nil)
-    ["category","category_id", "created_at", "description", "id", "id_value", "name", "price", "stock_quantity", "updated_at", "image_attachment", "image_blob"]
+  has_many_attached :images
+  def self.ransackable_associations(auth_object = nil)
+    ['category'] # Ensures the category association is searchable
   end
-
+  def self.ransackable_attributes(auth_object = nil)
+    ["name", "description", "price", "stock_quantity", "created_at", "updated_at", "category_id"] # example attributes
+  end
 end
