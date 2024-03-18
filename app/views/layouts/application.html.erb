@@ -11,6 +11,12 @@
   </head>
 
   <body>
-    <%= yield %>
-  </body>
+  <%= link_to 'Home', root_path %> |
+  <%= link_to 'Products', products_path %> |
+  <% Category.all.each do |category| %>
+    <%= link_to category.name, category_products_path(category) %>
+  <% end %>
+
+  <%= yield %>
+</body>
 </html>

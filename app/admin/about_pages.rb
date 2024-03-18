@@ -10,4 +10,3 @@ ActiveAdmin.register AboutPage do
     f.actions
   end
 end
-

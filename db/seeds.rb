@@ -23,5 +23,3 @@
 #   end
 # end
 
-AboutPage.create(title: "About Us", content: "This is what we do.")
-  ContactPage.create(title: "Contact Us", content: "Here's how you can reach us.")
