@@ -1,5 +1,6 @@
 ActiveAdmin.register Product do
-  permit_params :name, :description, :price, :stock_quantity, :category_id, images: []
+  # Add :on_sale to the list of permitted parameters
+  permit_params :name, :description, :price, :stock_quantity, :category_id, :on_sale, images: []
 
   filter :category_id, as: :select, collection: -> { Category.all.map { |c| [c.name, c.id] } }
 
@@ -12,6 +13,7 @@ ActiveAdmin.register Product do
       f.input :price
       f.input :stock_quantity
       f.input :category_id, as: :select, collection: Category.all.collect { |c| [c.name, c.id] }
+      f.input :on_sale, as: :boolean # Add this line
       f.input :images, as: :file, input_html: { multiple: true }
 
       # Display existing images with an option to remove them (method assumed to be implemented)
@@ -39,7 +41,7 @@ ActiveAdmin.register Product do
       row :category do
         product.category.name if product.category
       end
-
+      row :on_sale # Display the "on sale" status in the show page
       # Display multiple attached images
       row :images do
         div do

@@ -3,6 +3,17 @@ class ProductsController < ApplicationController
     @product = Product.find(params[:id])
   end
   def index
-    @products = Product.page(params[:page]).per(10) # Example: limit to 20 for the front page, adjust as needed
+    # Initialize the products query based on the filter
+    products_query = case params[:filter]
+                     when 'on_sale'
+                       Product.on_sale
+                     when 'new'
+                       Product.new_products
+                     else
+                       Product.all
+                     end
+
+    # Apply pagination after the filter has been applied
+    @products = products_query.page(params[:page]).per(10)
   end
 end

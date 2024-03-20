@@ -4,10 +4,24 @@
   <%= form.submit "Search" %>
 <% end %>
 
+<hr>
+
+<%= link_to 'All', products_path %>
+<%= link_to 'On Sale', products_path(filter: 'on_sale') %>
+<%= link_to 'New Products', products_path(filter: 'new') %>
+
+<hr>
 
 <% @products.each do |product| %>
   <div>
-    <%= link_to product.name, product_path(product) %>
+    <h2><%= link_to product.name, product_path(product) %></h2>
     <p><%= product.description %></p>
+    <!-- Display "On Sale" badge if product is on sale -->
+    <% if product.on_sale %>
+      <span>On Sale!</span>
+    <% end %>
+    <!-- Add more product details as needed -->
   </div>
 <% end %>
+
+<%= paginate @products %>
