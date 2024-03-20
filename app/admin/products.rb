@@ -4,6 +4,33 @@ ActiveAdmin.register Product do
 
   filter :category_id, as: :select, collection: -> { Category.all.map { |c| [c.name, c.id] } }
 
+  member_action :delete_image, method: :delete do
+    image = ActiveStorage::Attachment.find(params[:image_id])
+    image.purge
+    redirect_back(fallback_location: admin_product_path(params[:id]), notice: "Image was successfully deleted.")
+  end
+
+  controller do
+    def update
+      # Find the product by ID
+      product = Product.find(params[:id])
+
+      # Check if there are new images uploaded
+      if params[:product][:images]
+        # Attach the new images to the existing ones
+        product.images.attach(params[:product][:images])
+      end
+
+      # Update product attributes excluding the images from params
+      product_params = permitted_params[:product].except(:images)
+      if product.update(product_params)
+        redirect_to admin_product_path(product), notice: "Product updated successfully."
+      else
+        render :edit, notice: "There was an issue updating the product."
+      end
+    end
+  end
+
   form do |f|
     f.semantic_errors # Handles displaying errors
     f.inputs 'Product Details' do
@@ -15,15 +42,12 @@ ActiveAdmin.register Product do
       f.input :category_id, as: :select, collection: Category.all.collect { |c| [c.name, c.id] }
       f.input :on_sale, as: :boolean # Add this line
       f.input :images, as: :file, input_html: { multiple: true }
-
-      # Display existing images with an option to remove them (method assumed to be implemented)
       if f.object.images.attached?
         ul do
           f.object.images.each do |image|
             li do
               span image_tag(image.variant(resize_to_limit: [100, 100]))
-              # If you implement a method to remove images, you can add a delete link here
-              # span link_to 'Remove', delete_image_path(image.id), method: :delete
+              span link_to 'Remove', delete_image_admin_product_path(product_id: f.object.id, image_id: image.id), method: :delete, data: { confirm: 'Are you sure?' }
             end
           end
         end

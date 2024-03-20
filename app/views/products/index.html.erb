@@ -4,13 +4,7 @@
   <%= form.submit "Search" %>
 <% end %>
 
-<hr>
 
-<%= link_to 'All', products_path %>
-<%= link_to 'On Sale', products_path(filter: 'on_sale') %>
-<%= link_to 'New Products', products_path(filter: 'new') %>
-
-<hr>
 
 <% @products.each do |product| %>
   <div>

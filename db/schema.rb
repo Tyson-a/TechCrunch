@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_20_064607) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_18_021550) do
   create_table "about_pages", force: :cascade do |t|
+    t.string "title"
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "title"
   end
 
   create_table "active_admin_comments", force: :cascade do |t|
@@ -79,10 +79,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_064607) do
   end
 
   create_table "contact_pages", force: :cascade do |t|
+    t.string "title"
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "title"
   end
 
   create_table "products", force: :cascade do |t|
@@ -90,10 +90,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_064607) do
     t.text "description"
     t.decimal "price"
     t.integer "stock_quantity"
+    t.boolean "on_sale"
     t.integer "category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "on_sale"
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 
