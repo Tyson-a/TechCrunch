@@ -1,6 +1,7 @@
 ActiveAdmin.register Product do
   # Add :on_sale to the list of permitted parameters
-  permit_params :name, :description, :price, :stock_quantity, :category_id, :on_sale, images: []
+  permit_params :name, :description, :price, :stock_quantity, :category_id, :on_sale, images: [], created_at: DateTime, updated_at: DateTime
+
 
   filter :category_id, as: :select, collection: -> { Category.all.map { |c| [c.name, c.id] } }
 
@@ -11,25 +12,41 @@ ActiveAdmin.register Product do
   end
 
   controller do
-    def update
-      # Find the product by ID
-      product = Product.find(params[:id])
+    def create
+      @product = Product.new(permitted_params[:product])
 
-      # Check if there are new images uploaded
-      if params[:product][:images]
-        # Attach the new images to the existing ones
-        product.images.attach(params[:product][:images])
-      end
+      # Manually assign timestamps if provided
+      @product.created_at = params[:product][:created_at] if params[:product][:created_at].present?
+      @product.updated_at = params[:product][:updated_at] if params[:product][:updated_at].present?
 
-      # Update product attributes excluding the images from params
-      product_params = permitted_params[:product].except(:images)
-      if product.update(product_params)
-        redirect_to admin_product_path(product), notice: "Product updated successfully."
+      if @product.save
+        redirect_to admin_product_path(@product), notice: "Product was successfully created."
       else
-        render :edit, notice: "There was an issue updating the product."
+        render :new
+      end
+    end
+
+    def update
+      @product = Product.find(params[:id])
+
+      # Attach new images if any
+      @product.images.attach(params[:product][:images]) if params[:product][:images]
+
+      # Exclude images from product_params to handle them separately
+      product_params = permitted_params[:product].except(:images, :created_at, :updated_at)
+
+      # Manually update timestamps if provided
+      @product.created_at = params[:product][:created_at] if params[:product][:created_at].present?
+      @product.updated_at = params[:product][:updated_at] if params[:product][:updated_at].present?
+
+      if @product.update(product_params)
+        redirect_to admin_product_path(@product), notice: "Product was successfully updated."
+      else
+        render :edit
       end
     end
   end
+
 
   form do |f|
     f.semantic_errors # Handles displaying errors
@@ -39,6 +56,8 @@ ActiveAdmin.register Product do
       f.input :description
       f.input :price
       f.input :stock_quantity
+      f.input :created_at, as: :datetime_picker
+    f.input :updated_at, as: :datetime_picker
       f.input :category_id, as: :select, collection: Category.all.collect { |c| [c.name, c.id] }
       f.input :on_sale, as: :boolean # Add this line
       f.input :images, as: :file, input_html: { multiple: true }

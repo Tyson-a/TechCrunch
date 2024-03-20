@@ -11,12 +11,13 @@
   </head>
 
   <body>
-  <%= link_to 'Home', root_path %> |
-  <%= link_to 'On Sale', products_path(filter: 'on_sale') %>
-  <%= link_to 'New Products', products_path(filter: 'new') %>
+  <%= link_to 'About', about_path %> |
+  <%= link_to 'Contact', contact_path %> |
+  <%= link_to 'On Sale', products_path(filter: 'on_sale') %> |
+  <%= link_to 'New Products', products_path(filter: 'new') %> |
   <%= link_to 'Products', products_path %> |
   <% Category.all.each do |category| %>
-    <%= link_to category.name, category_products_path(category) %>
+    <%= link_to category.name, category_products_path(category) %> |
   <% end %>
 
   <%= yield %>
