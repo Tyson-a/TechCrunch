@@ -1,6 +1,7 @@
 ActiveAdmin.register Product do
   # Add :on_sale to the list of permitted parameters
-  permit_params :name, :description, :price, :stock_quantity, :category_id, :on_sale, images: [], created_at: DateTime, updated_at: DateTime
+  permit_params :name, :description, :price, :stock_quantity, :category_id, :on_sale, images: []
+
 
 
   filter :category_id, as: :select, collection: -> { Category.all.map { |c| [c.name, c.id] } }

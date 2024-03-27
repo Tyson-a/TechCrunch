@@ -4,7 +4,7 @@
 <p><%= @product.description %></p>
 
 <% if @product.images.attached? %>
-  <% @product.images.each do |image| %>
+  <% @product.images.each do |image | %>
     <%= image_tag(image, height: "200") %>
   <% end %>
 <% end %>

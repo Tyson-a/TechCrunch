@@ -1,6 +1,19 @@
 class Product < ApplicationRecord
+
+  def image
+    images.first
+  end
   belongs_to :category
   has_many_attached :images
+   # Assuming you have `description` as a field and an `image` as an attached file (e.g., using Active Storage)
+   validates :description, presence: true
+
+   validates :image, presence: true
+
+   # Custom method to check if a product is sellable
+   def sellable?
+    description.present? && images.attached?
+  end
   def self.ransackable_associations(auth_object = nil)
     ['category'] # Ensures the category association is searchable
   end

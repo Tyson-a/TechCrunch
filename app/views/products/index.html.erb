@@ -10,17 +10,17 @@
   <% end %>
 </div>
 
-
 <% @products.each do |product| %>
-  <div>
-    <h2><%= link_to product.name, product_path(product) %></h2>
-    <p><%= product.description %></p>
-    <!-- Display "On Sale" badge if product is on sale -->
-    <% if product.on_sale %>
-      <span>On Sale!</span>
-    <% end %>
-    <!-- Add more product details as needed -->
-  </div>
+  <% if product.description.present? && product.images.attached? %>
+    <div>
+      <h2><%= link_to product.name, product_path(product) %></h2>
+      <p><%= product.description %></p>
+      <!-- Display "On Sale" badge if product is on sale -->
+      <% if product.on_sale %>
+        <span>On Sale!</span>
+      <% end %>
+      <!-- Add more product details as needed -->
+    </div>
+  <% end %>
 <% end %>
-
 <%= paginate @products %>

@@ -4,7 +4,7 @@ class ProductsController < ApplicationController
   end
 
   def index
-    # Start with the base query
+    # Your existing filter logic remains the same
     products_query = case params[:filter]
                      when 'on_sale'
                        Product.on_sale
@@ -14,18 +14,21 @@ class ProductsController < ApplicationController
                        Product.all
                      end
 
-    # Filter by keyword if it's provided
     if params[:keyword].present?
-      products_query = products_query.where("name LIKE :keyword OR description LIKE :keyword", keyword: "%#{params[:keyword]}%")
+      keyword = params[:keyword].downcase
+      products_query = products_query.where('LOWER(name) LIKE ? OR LOWER(description) LIKE ?', "%#{keyword}%", "%#{keyword}%")
     end
 
-
-    # Filter by category if a category_id is provided and it's not blank
     if params[:category_id].present?
       products_query = products_query.where(category_id: params[:category_id])
     end
 
-    # Continue applying pagination to the filtered query
-    @products = products_query.page(params[:page]).per(10)
+    # Fetch products based on filters and check for sellability in Ruby
+    sellable_products = products_query.select { |product| product.sellable? }
+
+    # Apply Kaminari pagination to the array of sellable products
+    @products = Kaminari.paginate_array(sellable_products).page(params[:page]).per(10)
   end
+
+  # Your initiate_sale method remains the same
 end
