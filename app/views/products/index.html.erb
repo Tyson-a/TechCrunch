@@ -4,6 +4,11 @@
   <%= form.submit "Search" %>
 <% end %>
 
+<div class="categories">
+  <% Category.all.each do |category| %>
+    <%= link_to category.name, category_products_path(category) %>
+  <% end %>
+</div>
 
 
 <% @products.each do |product| %>
