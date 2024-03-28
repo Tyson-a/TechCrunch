@@ -30,5 +30,4 @@ class ProductsController < ApplicationController
     @products = Kaminari.paginate_array(sellable_products).page(params[:page]).per(10)
   end
 
-  # Your initiate_sale method remains the same
 end
