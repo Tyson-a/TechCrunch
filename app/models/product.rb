@@ -5,10 +5,6 @@ class Product < ApplicationRecord
   end
   belongs_to :category
   has_many_attached :images
-   # Assuming you have `description` as a field and an `image` as an attached file (e.g., using Active Storage)
-   validates :description, presence: true
-
-   validates :image, presence: true
 
    # Custom method to check if a product is sellable
    def sellable?

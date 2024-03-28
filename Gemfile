@@ -36,6 +36,8 @@ gem 'image_processing'
 
 gem 'activestorage'
 
+gem 'bcrypt'
+
 gem 'kaminari'
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"

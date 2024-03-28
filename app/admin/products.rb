@@ -1,6 +1,6 @@
 ActiveAdmin.register Product do
   # Add :on_sale to the list of permitted parameters
-  permit_params :name, :description, :price, :stock_quantity, :category_id, :on_sale, images: []
+  permit_params :name , :description, :price, :stock_quantity, :category_id, :on_sale, images: []
 
 
 

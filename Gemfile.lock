@@ -331,6 +331,7 @@ PLATFORMS
 DEPENDENCIES
   activeadmin
   activestorage
+  bcrypt
   bootsnap
   capybara
   debug
