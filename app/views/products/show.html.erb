@@ -9,4 +9,6 @@
   <% end %>
 <% end %>
 
+<%= button_to 'Add to Cart', cart_items_path(product_id: @product.id), method: :post %>
+
 <%= link_to 'Back', :back, class: "back-link" %>
