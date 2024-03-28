@@ -1,6 +1,6 @@
 # app/models/cart.rb
 class Cart < ApplicationRecord
-  belongs_to :user, optional: true  
+  belongs_to :User, optional: true
   has_many :cart_items, dependent: :destroy
 end
 
