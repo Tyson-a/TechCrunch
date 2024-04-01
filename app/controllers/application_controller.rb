@@ -4,14 +4,28 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
 
-
   def current_cart
-    return nil unless user_signed_in?
+    Rails.logger.debug "User signed in: #{user_signed_in?}"
 
-    cart = Cart.find_or_create_by(user_id: current_user.id)
-    session[:cart_id] = cart.id
+    if user_signed_in?
+      cart = Cart.find_or_create_by(user_id: current_user.id)
+      session[:cart_id] = cart.id
+      Rails.logger.debug "Cart for signed-in user: #{cart.inspect}"
+    else
+      cart = Cart.find_by(id: session[:cart_id])
+      if cart.nil?
+        cart = Cart.create
+        session[:cart_id] = cart.id
+      end
+      Rails.logger.debug "Cart for guest: #{cart.inspect}"
+    end
+
     cart
+  rescue => e
+    Rails.logger.error "Error in current_cart: #{e.message}"
+    nil
   end
+
 
   protected
 

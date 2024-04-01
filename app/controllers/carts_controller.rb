@@ -2,7 +2,7 @@ class CartsController < ApplicationController
   before_action :set_cart, only: [:show]
 
   def show
-    @cart 
+    @cart
   end
 
   private
