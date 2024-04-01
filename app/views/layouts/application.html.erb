@@ -12,7 +12,7 @@
 <body>
   <% if user_signed_in? %>
     <p>Welcome, <%= current_user.email %>!</p>
-    <%= link_to 'Sign out', destroy_user_session_path, method: :delete, data: { turbo: false } %>
+    <%= link_to 'Sign out', destroy_user_session_path, method: :delete %>
   <% else %>
     <%= link_to 'Sign in', new_user_session_path %>
     <%= link_to 'Sign up', new_user_registration_path %> |
@@ -23,6 +23,14 @@
   <%= link_to 'New Products', products_path(filter: 'new') %> |
   <%= link_to 'Products', products_path %> |
 
+  <%= link_to cart_path do %>
+    <i class="fas fa-shopping-cart"></i> Cart
+    <% if current_cart.present? %>
+      <span class="cart-count"><%= current_cart.cart_items.count %></span>
+    <% else %>
+      <span class="cart-count">0</span>
+    <% end %>
+  <% end %>
 
   <%= yield %>
 </body>

@@ -6,13 +6,11 @@ class ApplicationController < ActionController::Base
 
 
   def current_cart
-    if session[:cart_id]
-      Cart.find(session[:cart_id])
-    else
-      cart = Cart.create
-      session[:cart_id] = cart.id
-      cart
-    end
+    return nil unless user_signed_in?
+
+    cart = Cart.find_or_create_by(user_id: current_user.id)
+    session[:cart_id] = cart.id
+    cart
   end
 
   protected

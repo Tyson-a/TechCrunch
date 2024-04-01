@@ -2,6 +2,7 @@
 class CartItemsController < ApplicationController
   def create
     @cart = current_cart
+    logger.debug "Current cart: #{@cart.inspect}" 
     @cart_item = @cart.cart_items.find_by(product_id: params[:product_id])
 
     if @cart_item
@@ -16,4 +17,5 @@ class CartItemsController < ApplicationController
       redirect_to root_path, alert: 'Unable to add product to cart.'
     end
   end
+
 end

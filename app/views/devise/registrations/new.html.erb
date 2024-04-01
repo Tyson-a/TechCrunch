@@ -21,6 +21,9 @@
     <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
   </div>
 
+  <%= f.collection_select :province_id, Province.order(:name), :id, :name, prompt: 'Select a Province' %>
+
+
   <div class="actions">
     <%= f.submit "Sign up" %>
   </div>

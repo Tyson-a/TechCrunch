@@ -1,10 +1,11 @@
 class Product < ApplicationRecord
+  belongs_to :category
+  has_many_attached :images
+  has_many :cart_items
 
   def image
     images.first
   end
-  belongs_to :category
-  has_many_attached :images
 
    # Custom method to check if a product is sellable
    def sellable?
