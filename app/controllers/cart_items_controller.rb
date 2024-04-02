@@ -15,4 +15,26 @@ class CartItemsController < ApplicationController
       redirect_to root_path, alert: 'There was a problem adding the product to your cart.'
     end
   end
+  def update
+    @cart_item = CartItem.find(params[:id])
+    if @cart_item.update(cart_item_params)
+      redirect_to cart_path(@cart_item.cart), notice: 'Quantity was successfully updated.'
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+  def destroy
+    @cart_item = CartItem.find(params[:id])
+    cart = @cart_item.cart
+    @cart_item.destroy
+    redirect_to cart_path(cart), notice: 'Item was successfully removed from your cart.'
+  end
+
+
+  private
+
+  def cart_item_params
+    params.require(:cart_item).permit(:quantity)
+  end
+
 end

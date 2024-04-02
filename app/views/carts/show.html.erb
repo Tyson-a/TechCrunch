@@ -1,8 +1,15 @@
 <h2>Your Shopping Cart</h2>
 <% if @cart.present? %>
   <% @cart.cart_items.each do |item| %>
-    <p><%= item.product.name %> - <%= item.quantity %></p>
-  <% end %>
+    <div>
+      <strong>Product:</strong> <%= item.product.name %>
+      <%= form_with(model: item, local: true, method: :patch) do |form| %>
+        <%= form.number_field :quantity, min: 1 %>
+        <%= form.submit "Update Quantity" %>
+      <% end %>
+      <%= button_to "Remove Item", cart_item_path(item), method: :delete, data: { confirm: "Are you sure?" } %>
+    </div>
+  <% end %> <!-- This ends the loop over cart_items -->
 <% else %>
   <p>Your cart is empty.</p>
-<% end %>
+<% end %> <!-- This ends the conditional check for @cart.present? -->
