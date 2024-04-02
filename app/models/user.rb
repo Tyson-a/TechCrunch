@@ -1,5 +1,8 @@
 class User < ApplicationRecord
   belongs_to :province, optional: true
+  validates :address, presence: true
+  validates :password, presence: true, confirmation: true, if: -> { new_record? || !password.nil? }
+
   has_one :cart
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable

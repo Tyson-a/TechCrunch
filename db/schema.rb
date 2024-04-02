@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_01_063428) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_02_032700) do
   create_table "about_pages", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -103,6 +103,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_01_063428) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "orders", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -148,6 +153,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_01_063428) do
     t.string "city"
     t.string "province"
     t.integer "province_id", null: false
+    t.string "address"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["province_id"], name: "index_users_on_province_id"

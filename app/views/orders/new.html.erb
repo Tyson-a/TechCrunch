@@ -1,0 +1,34 @@
+<h2>Invoice</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @cart.cart_items.each do |item| %>
+      <tr>
+        <td><%= item.product.name %></td>
+        <td><%= number_to_currency(item.product.price) %></td>
+        <td><%= item.quantity %></td>
+        <td><%= number_to_currency(item.quantity * item.product.price) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if current_user.province %>
+  <% pst = current_user.province.pst %>
+  <% gst = current_user.province.gst %>
+  <% hst = current_user.province.hst %>
+  <!-- Calculate taxes based on the province -->
+  <%# Implement tax calculations based on your logic %>
+  <%# Display the calculated taxes %>
+<% else %>
+  <p>Please provide your province for tax calculation.</p>
+  <%# Form for setting the province %>
+<% end %>

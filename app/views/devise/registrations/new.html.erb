@@ -21,7 +21,18 @@
     <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
   </div>
 
-  <%= f.collection_select :province_id, Province.order(:name), :id, :name, prompt: 'Select a Province' %>
+  <div class="field">
+  <%= f.label :address %><br />
+  <%= f.text_field :address, autocomplete: "address" %>
+</div>
+
+
+<div class="field">
+  <%= f.label :city %><br />
+  <%= f.text_field :city %>
+</div>
+
+<%= f.collection_select :province_id, Province.order(:name), :id, :name, prompt: 'Select your province' %>
 
 
   <div class="actions">
