@@ -41,6 +41,9 @@ gem 'bcrypt'
 gem 'kaminari'
 
 gem 'bootstrap'
+
+gem 'webpacker'
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 
