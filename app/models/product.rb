@@ -3,6 +3,8 @@ class Product < ApplicationRecord
   has_many_attached :images
   has_many :cart_items
 
+  scope :sellable, -> { where("stock_quantity > ?", 0) }
+
   def image
     images.first
   end

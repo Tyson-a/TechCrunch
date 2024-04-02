@@ -3,7 +3,7 @@ class ProductsController < ApplicationController
 
   def show
     @product = Product.find(params[:id])
-   
+
   end
 
   def index
@@ -27,10 +27,10 @@ class ProductsController < ApplicationController
     end
 
     # Fetch products based on filters and check for sellability in Ruby
-    sellable_products = products_query.select { |product| product.sellable? }
+    products_query = products_query.sellable
 
     # Apply Kaminari pagination to the array of sellable products
-    @products = Kaminari.paginate_array(sellable_products).page(params[:page]).per(10)
+    @products = products_query.page(params[:page]).per(10)
   end
 
 end

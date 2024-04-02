@@ -1,15 +1,106 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
- * vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
- *= require_tree .
- *= require_self
- */
+
+body {
+  background-color: #f8f9fa; 
+  color: #343a40;
+  font-family: 'Nunito', sans-serif; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #343a40; 
+  font-weight: bold;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none; 
+    
+    &:hover, &:focus {
+      color: #0056b3;
+      text-decoration: underline;
+    }
+  }
+
+  
+  
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  &:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  &:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
+  }
+}
+
+input, select, textarea {
+  border: 1px solid #ced4da;
+  &:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+}
+
+.navbar-custom {
+  background-color: #343a40; 
+  border-bottom: 3px solid #007bff;
+  .navbar-brand {
+    color: #007bff; 
+    font-weight: bold;
+    &:hover {
+      color: #0056b3; 
+    }
+  }
+
+  .nav-link {
+    color: #ffffff; 
+    &:hover {
+      color: #007bff;
+    }
+  }
+
+  .navbar-toggler {
+    border-color: #007bff; 
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='%23ffffff' viewBox='0 0 30 30'><path d='M4 7h22M4 15h22M4 23h22'/></svg>");
+    }
+  }
+
+  .badge {
+    background-color: #007bff; 
+  }
+}
+
+.navbar {
+  @extend .navbar-custom;
+}
+
+.categories {
+    margin-bottom: 20px;
+  }
+  
+  .category-link {
+    margin-right: 10px;
+    text-decoration: none;
+    /* Add more styles as needed */
+  }
+  
+  .product {
+    margin-bottom: 20px;
+    /* Add more styles as needed */
+  }
+  
+  .badge-sale {
+    color: #fff;
+    background-color: #f00;
+    /* Add more styles for your 'On Sale' badge */
+  }
+  

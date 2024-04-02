@@ -17,4 +17,15 @@ class User < ApplicationRecord
     Cart.create(user_id: self.id)
   end
 
+  def update_province
+    current_user.update(province_params)
+    redirect_to invoice_path # Or wherever the user should be directed after
+  end
+
+  private
+
+  def province_params
+    params.require(:user).permit(:province_id)
+  end
+
 end

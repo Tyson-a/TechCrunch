@@ -1,26 +1,30 @@
 <%= form_with(url: products_path, method: :get, local: true) do |form| %>
-  <%= form.text_field :keyword, placeholder: "Search by keyword" %>
-  <%= form.collection_select :category_id, Category.all, :id, :name, include_blank: true %>
+  <%= form.text_field :keyword, value: params[:keyword], placeholder: "Search by keyword" %>
+  <%= form.collection_select :category_id, Category.all, :id, :name, include_blank: true, selected: params[:category_id] %>
   <%= form.submit "Search" %>
 <% end %>
 
+
 <div class="categories">
   <% Category.all.each do |category| %>
-    <%= link_to category.name, category_products_path(category) %>
+    <%= link_to category.name, category_products_path(category), class: 'category-link' %>
   <% end %>
 </div>
 
-<% @products.each do |product| %>
-  <% if product.description.present? && product.images.attached? %>
-    <div>
-      <h2><%= link_to product.name, product_path(product) %></h2>
-      <p><%= product.description %></p>
-      <!-- Display "On Sale" badge if product is on sale -->
-      <% if product.on_sale %>
-        <span>On Sale!</span>
-      <% end %>
-      <!-- Add more product details as needed -->
-    </div>
+<% if @products.any? %>
+  <% @products.each do |product| %>
+    <% if product.description.present? && product.images.attached? %>
+      <div class="product">
+        <h2><%= link_to product.name, product_path(product) %></h2>
+        <p><%= product.description %></p>
+        <% if product.on_sale %>
+          <div class="badge badge-sale">On Sale!</div>
+        <% end %>
+        <!-- Add more product details as needed -->
+      </div>
+    <% end %>
   <% end %>
+  <%= paginate @products %>
+<% else %>
+  <p>There are no products to display.</p>
 <% end %>
-<%= paginate @products %>
