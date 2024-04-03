@@ -1,6 +1,5 @@
 class User < ApplicationRecord
   belongs_to :province, optional: true
-  validates :address, presence: true
   validates :password, presence: true, confirmation: true, if: -> { new_record? || !password.nil? }
 
   has_one :cart
@@ -19,7 +18,7 @@ class User < ApplicationRecord
 
   def update_province
     current_user.update(province_params)
-    redirect_to invoice_path # Or wherever the user should be directed after
+    redirect_to invoice_path
   end
 
   private

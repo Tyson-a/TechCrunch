@@ -32,8 +32,8 @@
   </div>
 
   <div class="field">
-  <%= f.label :street %><br />
-  <%= f.text_field :street, autofocus: true %>
+  <%= f.label :address %><br />
+  <%= f.text_field :address, autofocus: true %>
 </div>
 
 <div class="field">
@@ -42,8 +42,8 @@
 </div>
 
 <div class="field">
-  <%= f.label :province %><br />
-  <%= f.text_field :province %>
+<%= f.label :province_id, "Province" %><br>
+<%= f.collection_select :province_id, Province.all, :id, :name, include_blank: true %>
 </div>
 
 

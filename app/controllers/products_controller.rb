@@ -33,4 +33,18 @@ class ProductsController < ApplicationController
     @products = products_query.page(params[:page]).per(10)
   end
 
+  def reduce_stock
+    product = Product.find(params[:id])
+    unless product.update_quantity(-params[:amount].to_i)
+      flash[:alert] = product.errors.full_messages.to_sentence
+      # Redirect or render depending on your application flow
+      redirect_back(fallback_location: root_path)
+      return
+    end
+
+    # Proceed if stock successfully adjusted
+    flash[:notice] = "Stock quantity updated."
+    redirect_to product_path(product)
+  end
+
 end

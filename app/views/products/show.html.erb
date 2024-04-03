@@ -11,7 +11,7 @@
       <h2><%= @product.name %></h2>
       <p><strong>Description:</strong> <%= @product.description %></p>
       <p><strong>Price:</strong> <%= number_to_currency(@product.price) %></p>
-      <!-- Add more product details here as needed -->
+      <%= button_to 'Add to Cart', cart_items_path(product_id: @product.id), method: :post, class: "btn btn-primary" %>
     </div>
   </div>
 </div>

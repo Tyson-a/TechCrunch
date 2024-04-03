@@ -53,47 +53,80 @@
 #   end
 # end
 
-require 'csv'
+# require 'csv'
 
-csv_file_path = Rails.root.join('lib', 'seeds', 'products_images.csv')
+# csv_file_path = Rails.root.join('lib', 'seeds', 'products_images.csv')
 
-retry_count = 10
-max_retries = 100
+# retry_count = 0
+# max_retries = 4
 
-begin
-  CSV.foreach(csv_file_path, headers: true) do |row|
-    description = row['Description']
-    if description.include?(' - ') # Check if description includes ' - '
-      name = description.split(' - ').first.strip # Extract name from the beginning of description
-      if row['Name'].nil? || row['Name'].empty? # Check if 'Name' column is empty
-        row['Name'] = name # Assign extracted name to 'Name' column
-      end
-    end
+# begin
+#   CSV.foreach(csv_file_path, headers: true) do |row|
+#     description = row['Description']
+#     if description.include?(' - ') # Check if description includes ' - '
+#       name = description.split(' - ').first.strip # Extract name from the beginning of description
+#       if row['Name'].nil? || row['Name'].empty? # Check if 'Name' column is empty
+#         row['Name'] = name # Assign extracted name to 'Name' column
+#       end
+#     end
 
-    if row['Name'] # Ensure there is a value for 'Name'
-      name = row['Name'].strip
-      product = Product.find_by(name: name)
-      if product
-        product.update(description: description&.strip) # Update description
-        image_path = row['Image Path']&.strip
-        if image_path.present? # Check if image path is present
-          # Attach image to product
-          product.images.attach(io: File.open(image_path), filename: File.basename(image_path))
-        end
-        puts "Updated: #{product.name}"
-      else
-        puts "Product not found for name: #{name}"
-      end
-    else
-      puts "Name column value missing in row: #{row.inspect}"
-    end
-  end
-rescue SQLite3::BusyException
-  retry_count += 1
-  if retry_count <= max_retries
-    sleep 1
-    retry
-  else
-    puts "Maximum retry attempts reached. Aborting..."
-  end
+#     if row['Name'] # Ensure there is a value for 'Name'
+#       name = row['Name'].strip
+#       product = Product.find_by(name: name)
+#       if product
+#         product.update(description: description&.strip) # Update description
+#         image_path = row['Image Path']&.strip
+#         if image_path.present? # Check if image path is present
+#           # Attach image to product
+#           product.images.attach(io: File.open(image_path), filename: File.basename(image_path))
+#         end
+#         puts "Updated: #{product.name}"
+#       else
+#         puts "Product not found for name: #{name}"
+#       end
+#     else
+#       puts "Name column value missing in row: #{row.inspect}"
+#     end
+#   end
+# rescue SQLite3::BusyException
+#   retry_count += 1
+#   if retry_count <= max_retries
+#     sleep 9
+#     retry
+#   else
+#     puts "Maximum retry attempts reached. Aborting..."
+#   end
+# end
+
+# puts "Starting the process to remove duplicate images..."
+
+# # Fetch blobs with duplicate checksums
+# checksums = ActiveStorage::Blob
+#             .group(:checksum)
+#             .having('COUNT(*) > 1')
+#             .pluck(:checksum)
+
+# # For each checksum, find all attachments and keep only one
+# checksums.each do |checksum|
+#   # Find blobs by checksum
+#   blobs = ActiveStorage::Blob.where(checksum: checksum)
+
+#   # Collect all attachments from these blobs, except the first one
+#   attachments_to_remove = blobs.map(&:attachments).flatten.sort_by(&:id)[1..]
+
+#   # Remove the duplicates
+#   attachments_to_remove.each do |attachment|
+#     puts "Removing duplicate image from Product ##{attachment.record_id}"
+#     attachment.purge
+#   end
+# end
+
+# puts "Duplicate removal process completed."
+
+# Fetch all products that have a description
+products_with_description = Product.where.not(description: [nil, ''])
+
+# Iterate over these products and update their stock_quantity
+products_with_description.find_each do |product|
+  product.update(stock_quantity: rand(1..100))
 end
