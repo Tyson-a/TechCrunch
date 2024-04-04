@@ -44,6 +44,8 @@ gem 'bootstrap'
 
 gem 'webpacker'
 
+gem 'fuzzy_match'
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 

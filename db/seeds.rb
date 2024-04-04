@@ -97,6 +97,37 @@
 #     puts "Maximum retry attempts reached. Aborting..."
 #   end
 # end
+# require 'csv'
+
+# csv_file_path = Rails.root.join('lib', 'seeds', 'products_images2.csv')
+
+# retry_count = 0
+# max_retries = 4
+
+# begin
+#   CSV.foreach(csv_file_path, headers: true) do |row|
+#     description = row['Description'].strip
+#     # Attempt to extract the product name with a basic heuristic
+#     name = description.split(/( DDR| PC RAM| Desktop Memory)/).first.strip
+
+#     # Search for an existing product by the extracted name
+#     product = Product.find_by('name LIKE ?', "%#{name}%")
+#     if product
+#       # Perform the update if product exists
+#       product.update(description: description)
+#       image_path = row['Image Path']&.strip
+#       product.images.attach(io: File.open(image_path), filename: File.basename(image_path)) if image_path.present?
+#       puts "Updated: #{product.name}"
+#     else
+#       puts "Product not found for name: #{name}"
+#     end
+#   end
+# rescue SQLite3::BusyException
+#   retry_count += 1
+#   sleep 9 and retry if retry_count <= max_retries
+#   puts "Maximum retry attempts reached. Aborting..."
+# end
+
 
 # puts "Starting the process to remove duplicate images..."
 
@@ -123,10 +154,26 @@
 
 # puts "Duplicate removal process completed."
 
-# Fetch all products that have a description
-products_with_description = Product.where.not(description: [nil, ''])
+# # Fetch all products that have a description
+# products_with_description = Product.where.not(description: [nil, ''])
 
-# Iterate over these products and update their stock_quantity
-products_with_description.find_each do |product|
-  product.update(stock_quantity: rand(1..100))
-end
+# # Iterate over these products and update their stock_quantity
+# products_with_description.find_each do |product|
+#   product.update(stock_quantity: rand(1..100))
+# end
+
+# # Assuming 'category' is a direct attribute of Product
+# memory_category = Category.where('lower(name) = ?', 'memory'.downcase).first
+# memory_products = memory_category ? memory_category.products : Product.none
+
+# # Or, if 'category' is an association and 'name' is an attribute of Category
+# # memory_category = Category.find_by(name: 'memory')
+# # memory_products = memory_category ? memory_category.products : Product.none
+
+# if memory_products.exists?
+#   deleted_count = memory_products.count
+#   memory_products.destroy_all
+#   puts "#{deleted_count} memory products have been deleted."
+# else
+#   puts "No memory products found to delete."
+# end
