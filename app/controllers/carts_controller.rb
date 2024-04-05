@@ -54,22 +54,21 @@ class CartsController < ApplicationController
     end
 
     if insufficient_stock_items.empty?
-      # Implement checkout logic here
-      flash[:notice] = "Checkout successful."
-      redirect_to some_successful_checkout_path
+      # Proceed with order creation if stock is sufficient
+      order = current_user.orders.create(status: 'pending', shipping_address: "Some address") # Example, adjust as needed
+
+      cart_items.each do |cart_item|
+        # Here you'd transfer cart items to order items, adjust according to your app's models
+        order.order_items.create(product: cart_item.product, quantity: cart_item.quantity) # This is an example, adjust accordingly
+      end
+
+      # Optionally clear the cart after successful order placement
+      @cart.cart_items.destroy_all
+
+      redirect_to order_path(order), notice: 'Checkout successful.'
     else
       flash[:alert] = "Insufficient stock for: #{insufficient_stock_items.join(', ')}."
       redirect_to cart_path
-    end
-  end
-
-  private
-
-  def quantity_must_not_exceed_stock
-    return unless product && quantity
-
-    if quantity > product.stock_quantity
-      errors.add(:quantity, "exceeds available stock for #{product.name}")
     end
   end
 
