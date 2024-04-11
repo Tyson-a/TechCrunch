@@ -44,33 +44,24 @@ class CartsController < ApplicationController
   end
 
   def checkout
-    cart_items = @cart.cart_items
-    insufficient_stock_items = []
+    ActiveRecord::Base.transaction do
+      order = current_user.orders.create!(order_params) # Create an order
 
-    cart_items.each do |item|
-      unless item.product.stock_quantity >= item.quantity
-        insufficient_stock_items << item.product.name
-      end
-    end
-
-    if insufficient_stock_items.empty?
-      # Proceed with order creation if stock is sufficient
-      order = current_user.orders.create(status: 'pending', shipping_address: "Some address") # Example, adjust as needed
-
-      cart_items.each do |cart_item|
-        # Here you'd transfer cart items to order items, adjust according to your app's models
-        order.order_items.create(product: cart_item.product, quantity: cart_item.quantity) # This is an example, adjust accordingly
+      @cart.cart_items.each do |cart_item|
+        order.order_items.create!(
+          product_id: cart_item.product_id,
+          quantity: cart_item.quantity,
+          unit_price: cart_item.product.price # Assuming price is stored in the Product model
+        )
       end
 
-      # Optionally clear the cart after successful order placement
-      @cart.cart_items.destroy_all
-
+      @cart.cart_items.destroy_all # Clear the cart after checkout
       redirect_to order_path(order), notice: 'Checkout successful.'
-    else
-      flash[:alert] = "Insufficient stock for: #{insufficient_stock_items.join(', ')}."
-      redirect_to cart_path
+    rescue ActiveRecord::RecordInvalid => e
+      redirect_to cart_path, alert: "Failed to create order: #{e.message}"
     end
   end
+
 
   def set_cart
     @cart = current_cart # Ensure this method correctly finds or initializes the current user's cart

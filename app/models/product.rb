@@ -4,7 +4,8 @@ class Product < ApplicationRecord
   has_many_attached :images
   has_many :cart_items
   has_many :carts, through: :cart_items
-
+  has_many :order_items
+  has_many :orders, through: :order_items
   # Callbacks
   before_save :validate_stock_quantity
 
