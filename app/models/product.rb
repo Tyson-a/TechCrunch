@@ -6,7 +6,7 @@ class Product < ApplicationRecord
   has_many :carts, through: :cart_items
   has_many :order_items
   has_many :orders, through: :order_items
-  # Callbacks
+  validates :stock_quantity, numericality: { greater_than_or_equal_to: 0, message: "can't be negative" }
   before_save :validate_stock_quantity
 
   # Scopes

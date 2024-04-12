@@ -14,6 +14,7 @@ ActiveAdmin.register Order do
     column :gst
     column :hst
     column :tax_total
+    column :total_before_tax
     column :total_with_tax
     column :created_at
     actions
@@ -42,8 +43,17 @@ ActiveAdmin.register Order do
       row :gst
       row :hst
       row :tax_total
-      row :total_with_tax
+      row :total_before_tax do
+        number_to_currency(order.total_before_tax)
+      end
+      row :tax_total do
+        number_to_currency(order.tax_amount)
+      end
+      row :total_with_tax do
+        number_to_currency(order.total_with_tax)
+      end
     end
+
 
     panel "Order Items" do
       table_for order.order_items do

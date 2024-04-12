@@ -57,6 +57,14 @@ class CartsController < ApplicationController
           quantity: cart_item.quantity,
           unit_price: cart_item.product.price
         )
+
+        # Decrement stock quantity
+        product = cart_item.product
+        product.stock_quantity -= cart_item.quantity
+        if product.stock_quantity < 0
+          raise ActiveRecord::Rollback, "Not enough stock for #{product.name}"
+        end
+        product.save!
       end
 
       order.update(
@@ -73,6 +81,42 @@ class CartsController < ApplicationController
       redirect_to cart_path, alert: "Failed to create order: #{e.message}"
     end
   end
+
+  private
+
+  def set_cart
+    @cart = current_cart # Ensure this method correctly finds or initializes the current user's cart
+  end
+
+  def can_update_cart_item?(cart, product, quantity)
+    cart_item = cart.cart_items.find_by(product_id: product.id)
+    new_quantity = cart_item ? cart_item.quantity + quantity : quantity
+    new_quantity <= product.stock_quantity
+  end
+
+  def update_cart_item(cart, product, quantity)
+    cart_item = cart.cart_items.find_or_initialize_by(product_id: product.id)
+    cart_item.quantity += quantity
+    cart_item.save!
+  end
+
+  def calculate_tax(subtotal, tax_rate)
+    if tax_rate.present?
+      (subtotal * (tax_rate / 100.0)).round(2)
+    else
+      0
+    end
+  end
+
+  def order_params
+    province_name = current_user.province&.name
+    address = [current_user.street, current_user.city, province_name].compact.join(', ')
+    {
+      shipping_address: address,
+      payment_method: 'Default'  # This is a placeholder, adjust as needed
+    }
+  end
+end
 
 
   private
@@ -109,6 +153,4 @@ class CartsController < ApplicationController
     shipping_address: address,
     payment_method: 'Default'  # This is a placeholder, adjust as needed
   }
-end
-
 end

@@ -26,8 +26,11 @@ class Order < ApplicationRecord
 
   # Calculate total price including taxes without needing an argument
   def total_with_tax
-    total_before_tax + tax_amount
+    subtotal = total_before_tax
+    self.tax_total = tax_amount
+    subtotal + tax_total
   end
+
   def self.ransackable_associations(auth_object = nil)
     %w[user] # Only allow 'user' for now. Add more associations as needed.
   end
