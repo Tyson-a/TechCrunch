@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_11_213457) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_12_052340) do
   create_table "about_pages", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -120,6 +120,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_213457) do
     t.integer "user_id", null: false
     t.string "address"
     t.string "status"
+    t.string "shipping_address"
+    t.string "payment_method"
+    t.decimal "pst"
+    t.decimal "gst"
+    t.decimal "hst"
+    t.decimal "total_with_tax"
+    t.decimal "tax_total", precision: 10, scale: 2
+    t.decimal "total", precision: 10, scale: 2
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 

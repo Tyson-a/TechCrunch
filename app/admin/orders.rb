@@ -1,5 +1,6 @@
 ActiveAdmin.register Order do
-  permit_params :shipping_address, :payment_method, :user_id, :status # Include other fields as necessary
+  permit_params :shipping_address, :payment_method, :user_id, :status, :pst, :gst, :hst, :tax_total, :total_with_tax
+  filter :shipping_address
 
   index do
     selectable_column
@@ -7,12 +8,20 @@ ActiveAdmin.register Order do
     column :user do |order|
       order.user.email if order.user
     end
-    column :created_at
+    column :shipping_address
     column :status
+    column :pst
+    column :gst
+    column :hst
+    column :tax_total
+    column :total_with_tax
+    column :created_at
     actions
   end
 
+
   filter :user
+  filter :shipping_address
   filter :status
   filter :created_at
 
@@ -21,38 +30,55 @@ ActiveAdmin.register Order do
       row :user do
         order.user.email if order.user
       end
-      row :address
+      row :shipping_address
+      row :province do
+        # Access the province's name attribute
+        order.user.province.name if order.user&.province
+      end
       row :status
       row :created_at
       row :updated_at
+      row :pst
+      row :gst
+      row :hst
+      row :tax_total
+      row :total_with_tax
     end
-    panel "Cart Items" do
-      table_for order.user.cart.cart_items do
-        column :product
+
+    panel "Order Items" do
+      table_for order.order_items do
+        column :product do |order_item|
+          order_item.product.name
+        end
         column :quantity
-        column :price
+        column :unit_price do |order_item|
+          number_to_currency(order_item.unit_price)
+        end
+        column :total_price do |order_item|
+          number_to_currency(order_item.quantity * order_item.unit_price)
+        end
       end
     end
     active_admin_comments
   end
+
+
   form do |f|
     f.inputs do
       f.input :user, as: :select, collection: User.all.map { |u| [u.email, u.id] }
-      f.input :address
+      f.input :shipping_address
       f.input :status, as: :select, collection: ['pending', 'completed', 'cancelled']
+      # Include other fields as necessary
     end
     f.actions
   end
 
+  # Override the controller actions as necessary
   controller do
     def create
       @order = Order.new(permitted_params[:order])
-      @order.user = current_user
-      @order.status = 'pending'
-      # Add your logic to transfer items from cart to order
       if @order.save
-        # Handle payment processing here if necessary
-        redirect_to admin_order_path(@order), notice: 'Thank you for your order.'
+        redirect_to admin_order_path(@order), notice: 'The order has been successfully created.'
       else
         render :new
       end

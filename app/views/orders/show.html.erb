@@ -1,6 +1,6 @@
 <h2>Invoice</h2>
 
-<% subtotal = @cart.cart_items.sum { |item| item.quantity * item.product.price } %>
+<% subtotal = @order.order_items.sum { |item| item.quantity * item.unit_price } %>
 
 <table>
   <thead>
@@ -12,21 +12,21 @@
     </tr>
   </thead>
   <tbody>
-    <% @cart.cart_items.each do |item| %>
+    <% @order.order_items.each do |item| %>
       <tr>
         <td><%= item.product.name %></td>
-        <td><%= number_to_currency(item.product.price) %></td>
+        <td><%= number_to_currency(item.unit_price) %></td>
         <td><%= item.quantity %></td>
-        <td><%= number_to_currency(item.quantity * item.product.price) %></td>
+        <td><%= number_to_currency(item.quantity * item.unit_price) %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<% if current_user.province %>
-  <% pst_rate = current_user.province.pst || 0 %>
-  <% gst_rate = current_user.province.gst || 0 %>
-  <% hst_rate = current_user.province.hst || 0 %>
+<% if @order.user.province %>
+  <% pst_rate = @order.user.province.pst || 0 %>
+  <% gst_rate = @order.user.province.gst || 0 %>
+  <% hst_rate = @order.user.province.hst || 0 %>
 
   <% pst = subtotal * pst_rate / 100 %>
   <% gst = subtotal * gst_rate / 100 %>
@@ -42,10 +42,5 @@
   <p>Total Taxes: <%= number_to_currency(total_taxes) %></p>
   <p>Total Price (including taxes): <%= number_to_currency(total_price_with_taxes) %></p>
 <% else %>
-<p>Please provide your province for tax calculation.</p>
-<%= form_for current_user, url: update_province_user_path(current_user), method: :put do |f| %>
-  <%= f.collection_select :province_id, Province.all, :id, :name, include_blank: 'Select Province' %>
-  <%= f.submit "Set Province" %>
+  <p>Please provide your province for tax calculation.</p>
 <% end %>
-<% end %>
-

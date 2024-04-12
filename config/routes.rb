@@ -7,9 +7,11 @@ Rails.application.routes.draw do
   root to: 'products#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   resources :products, only: [:show, :index]
-  resource :cart, only: [:show]
+  resource :cart, only: [:show] do
+    post 'checkout', on: :member
+  end
   resources :cart_items, only: [:create, :update, :destroy]
-  resources :orders, only: [:new, :create, :show]
+  resources :orders, only: [:show, :new, :create]
   resources :provinces
   resources :users, only: [:show, :edit, :update]
 

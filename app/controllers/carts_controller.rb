@@ -42,26 +42,40 @@ class CartsController < ApplicationController
 
     redirect_to products_path
   end
-
   def checkout
     ActiveRecord::Base.transaction do
-      order = current_user.orders.create!(order_params) # Create an order
+      order = current_user.orders.create!(order_params)
+
+      subtotal = @cart.cart_items.sum { |item| item.quantity * item.product.price }
+      pst = calculate_tax(subtotal, current_user.province&.pst)
+      gst = calculate_tax(subtotal, current_user.province&.gst)
+      hst = calculate_tax(subtotal, current_user.province&.hst)
 
       @cart.cart_items.each do |cart_item|
         order.order_items.create!(
           product_id: cart_item.product_id,
           quantity: cart_item.quantity,
-          unit_price: cart_item.product.price # Assuming price is stored in the Product model
+          unit_price: cart_item.product.price
         )
       end
 
-      @cart.cart_items.destroy_all # Clear the cart after checkout
-      redirect_to order_path(order), notice: 'Checkout successful.'
+      order.update(
+        pst: pst,
+        gst: gst,
+        hst: hst,
+        tax_total: pst + gst + hst,
+        total: subtotal + pst + gst + hst
+      )
+
+      @cart.cart_items.destroy_all
+      redirect_to order_path(order), notice: 'Checkout successful. Here is your invoice.'
     rescue ActiveRecord::RecordInvalid => e
       redirect_to cart_path, alert: "Failed to create order: #{e.message}"
     end
   end
 
+
+  private
 
   def set_cart
     @cart = current_cart # Ensure this method correctly finds or initializes the current user's cart
@@ -78,4 +92,23 @@ class CartsController < ApplicationController
     cart_item.quantity += quantity
     cart_item.save!
   end
+
+  def calculate_tax(subtotal, tax_rate)
+    if tax_rate.present?
+      (subtotal * (tax_rate / 100.0)).round(2)
+    else
+      0
+    end
+  end
+
+  def order_params
+  # Ensure you're calling the name attribute on the province association
+  province_name = current_user.province&.name
+  address = [current_user.street, current_user.city, province_name].compact.join(', ')
+  {
+    shipping_address: address,
+    payment_method: 'Default'  # This is a placeholder, adjust as needed
+  }
+end
+
 end

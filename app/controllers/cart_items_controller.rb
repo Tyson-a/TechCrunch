@@ -14,22 +14,34 @@ class CartItemsController < ApplicationController
     end
   end
 
-  def update
-    @cart_item = CartItem.find(params[:id])
 
-    # Check if the updated quantity is available in the product stock before saving
-    if @cart_item.quantity > @cart_item.product.stock_quantity
-      flash[:alert] = "Sorry, we don't have that much stock available."
-      redirect_to cart_path(@cart_item.cart)
-    elsif @cart_item.update(cart_item_params)
-      flash[:notice] = 'Quantity was successfully updated.'
-      redirect_to cart_path(@cart_item.cart)
+  def update
+    @cart_item = CartItem.find_by(id: params[:id])
+
+    if @cart_item.nil?
+      flash[:alert] = "CartItem not found."
+      redirect_to cart_path
+      return
+    end
+
+    updated_quantity = cart_item_params[:quantity].to_i
+
+    if updated_quantity > @cart_item.product.stock_quantity
+      flash[:alert] = "Only #{@cart_item.product.stock_quantity} of #{@cart_item.product.name} available."
+      redirect_to cart_path
+      return
+    end
+
+    if @cart_item.update(quantity: updated_quantity)
+      flash[:notice] = "Cart item updated."
+      redirect_to cart_path
     else
-      # If there's some other problem with the update, handle it here
-      flash[:alert] = @cart_item.errors.full_messages.to_sentence
-      redirect_to cart_path(@cart_item.cart)
+      flash[:alert] = "Failed to update cart item."
+      redirect_to cart_path
     end
   end
+
+
 
   def destroy
     @cart_item = CartItem.find(params[:id])
