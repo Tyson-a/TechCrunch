@@ -24,7 +24,11 @@ Rails.application.routes.draw do
   get 'categories/:id/products', to: 'categories#show', as: 'category_products'
   get 'products/:id', to: 'products#show'
 
-
+  
+  get 'checkout', to: 'checkout#show'
+  post 'create_checkout_session', to: 'checkout#create_session'
+  get 'checkout_success', to: 'checkout#success'
+  get 'checkout_cancel', to: 'checkout#cancel'
   # Defines the root path route ("/")
   # root "posts#index"
 end

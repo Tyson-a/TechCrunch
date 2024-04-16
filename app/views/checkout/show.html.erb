@@ -1,0 +1,26 @@
+<!-- app/views/checkout/checkout.html.erb -->
+<script src="https://js.stripe.com/v3/"></script>
+<button id="checkout-button">Checkout</button>
+
+<script>
+document.getElementById('checkout-button').addEventListener('click', function () {
+  fetch('/create_checkout_session', {
+    method: 'POST',
+  })
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (session) {
+    var stripe = Stripe('<%= ENV["STRIPE_PUBLISHABLE_KEY"] %>');
+    stripe.redirectToCheckout({
+      sessionId: session.id
+    }).then(function (result) {
+      if (result.error) {
+        alert(result.error.message);
+      }
+    });
+  }).catch(function (error) {
+    console.error("Error:", error);
+  });
+});
+</script>

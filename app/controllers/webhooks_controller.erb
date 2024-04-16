@@ -1,0 +1,32 @@
+# app/controllers/webhooks_controller.rb
+class WebhooksController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
+  def stripe
+    payload = request.body.read
+    sig_header = request.env['HTTP_STRIPE_SIGNATURE']
+    event = nil
+
+    begin
+      event = Stripe::Webhook.construct_event(
+        payload, sig_header, ENV['STRIPE_WEBHOOK_SECRET']
+      )
+    rescue JSON::ParserError, Stripe::SignatureVerificationError => e
+      render json: { message: e.message }, status: 400
+      return
+    end
+
+    if event['type'] == 'checkout.session.completed'
+      session = event['data']['object']
+      handle_checkout_session(session)
+    end
+
+    render json: { message: 'Success' }, status: 200
+  end
+
+  private
+
+  def handle_checkout_session(session)
+    # Update the order status here
+  end
+end

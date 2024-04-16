@@ -3,6 +3,10 @@ class Order < ApplicationRecord
   has_many :order_items, dependent: :destroy
   has_many :products, through: :order_items
 
+  def update_status(new_status)
+    update(status: new_status)
+  end
+
     # Calculate the total price before taxes
     # Calculate the total price before taxes
     def total_before_tax
