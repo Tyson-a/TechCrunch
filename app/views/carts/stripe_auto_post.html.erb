@@ -1,0 +1,9 @@
+<!-- app/views/carts/stripe_auto_post.html.erb -->
+<form id="auto-post-form" action="<%= checkout_cart_path %>" method="post" style="display:none;">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+</form>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('auto-post-form').submit();
+  });
+</script>

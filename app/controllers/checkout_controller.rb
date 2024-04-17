@@ -1,39 +1,49 @@
 # app/controllers/checkout_controller.rb
 class CheckoutController < ApplicationController
-  # This action will render the checkout page
-  def show
-    # Add any setup code here for preparing the checkout page
-    # For example, you might load user info or cart details
-  end
+  before_action :set_cart, only: [:create_stripe_session]
+  before_action :set_stripe_api_key
 
-  # This action creates a Stripe Checkout session
-  def create_session
-    @session = Stripe::Checkout::Session.create(
-      payment_method_types: ['card'],
-      line_items: [{
-        name: "Product Name",
-        description: "Product Description",
-        amount: 2000, # Amount in cents, adjust as needed
+  # app/controllers/checkout_controller.rb
+def create_stripe_session
+  line_items = @cart.cart_items.map do |item|
+    {
+      price_data: {
         currency: 'usd',
-        quantity: 1,
-      }],
-      success_url: checkout_success_url + '?session_id={CHECKOUT_SESSION_ID}',
-      cancel_url: checkout_cancel_url,
-    )
-
-    respond_to do |format|
-      format.json { render json: { id: @session.id } }
-    end
+        product_data: {
+          name: item.product.name,
+        },
+        unit_amount: (item.product.price * 100).to_i,
+      },
+      quantity: item.quantity
+    }
   end
 
-  # Optionally, you can include actions to handle success and cancellation routes
-  def success
-    # Here you would handle post-payment success, such as updating order status
-    # Optionally, you can retrieve the session ID if needed to confirm details
-    @session_id = params[:session_id]
-  end
+  stripe_session = Stripe::Checkout::Session.create(
+    payment_method_types: ['card'],
+    line_items: line_items,
+    mode: 'payment',
+    success_url: stripe_auto_post_url,  # Redirects here after successful payment
+    cancel_url: order_cancel_url
+  )
 
-  def cancel
-    # Handle the case where a user cancels the payment
+  redirect_to stripe_session.url, allow_other_host: true
+rescue Stripe::StripeError => e
+  flash[:error] = e.message
+  redirect_to carts_path
+end
+
+
+def cancel
+  # Logic to handle when a user cancels their checkout at the Stripe payment page
+  flash[:alert] = "Checkout was canceled. If this was an error, please try again or contact support."
+  redirect_to cart_path  # Redirects user back to their cart
+end
+
+
+
+  private
+
+  def set_stripe_api_key
+    Stripe.api_key = Rails.application.credentials.dig(:stripe, :secret_key)
   end
 end

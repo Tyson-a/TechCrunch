@@ -82,6 +82,9 @@ class CartsController < ApplicationController
     end
   end
 
+  def stripe_auto_post
+    # This action renders an auto-submit form view
+  end
   private
 
   def set_cart
