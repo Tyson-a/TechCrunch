@@ -7,6 +7,10 @@ class Product < ApplicationRecord
   has_many :order_items
   has_many :orders, through: :order_items
   validates :stock_quantity, numericality: { greater_than_or_equal_to: 0, message: "can't be negative" }
+  validates :name, presence: true, uniqueness: { scope: :category_id, message: "should be unique within the same category" }
+  validates :price, numericality: { greater_than_or_equal_to: 0, message: "must be a non-negative number" }
+  validates :description, presence: true
+
   before_save :validate_stock_quantity
 
   # Scopes

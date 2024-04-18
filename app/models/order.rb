@@ -3,6 +3,9 @@ class Order < ApplicationRecord
   has_many :order_items, dependent: :destroy
   has_many :products, through: :order_items
 
+ 
+  validates :shipping_address, presence: true
+
   def update_status(new_status)
     update(status: new_status)
   end

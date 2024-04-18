@@ -25,7 +25,9 @@ Rails.application.routes.draw do
   get 'order/cancel', to: 'orders#cancel', as: 'order_cancel'
   post 'create_stripe_session', to: 'checkout#create_stripe_session'
   # Users and Provinces
-  resources :users, only: [:show, :edit, :update]
+  resources :users, only: [:show, :edit, :update] do
+    get 'orders', on: :member, as: 'order_history'
+  end
   resources :provinces
 
   # Static Pages

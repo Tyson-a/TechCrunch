@@ -91,9 +91,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_052340) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
-    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
   end
 
   create_table "contact_pages", force: :cascade do |t|
@@ -122,10 +122,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_052340) do
     t.string "status"
     t.string "shipping_address"
     t.string "payment_method"
-    t.decimal "pst"
-    t.decimal "gst"
-    t.decimal "hst"
-    t.decimal "total_with_tax"
+    t.decimal "pst", precision: 10, scale: 2, default: "0.0"
+    t.decimal "gst", precision: 10, scale: 2, default: "0.0"
+    t.decimal "hst", precision: 10, scale: 2, default: "0.0"
+    t.decimal "total_with_tax", precision: 10, scale: 2, default: "0.0"
     t.decimal "tax_total", precision: 10, scale: 2
     t.decimal "total", precision: 10, scale: 2
     t.index ["user_id"], name: "index_orders_on_user_id"

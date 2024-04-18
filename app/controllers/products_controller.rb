@@ -29,7 +29,7 @@ class ProductsController < ApplicationController
     products_query = products_query.sellable
 
     # Apply Kaminari pagination to the array of sellable products
-    @products = products_query.page(params[:page]).per(10)
+    @products = products_query.page(params[:page]).per(9)
   end
 
   def reduce_stock

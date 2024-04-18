@@ -1,12 +1,36 @@
 <h1><%= @category.name %></h1>
-<% @products.each do |product| %>
-  <% if product.sellable? %>
-    <div>
-      <%= link_to product.name, product_path(product) %>
-    </div>
-  <% end %>
-<% end %>
 
-<%= paginate @products %>
+<div class="row">
+  <% @products.each do |product| %>
+    <% if product.sellable? %>
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="card h-100 border-0 shadow-sm position-relative">
+          <% if product.on_sale %>
+            <!-- On Sale badge -->
+            <div class="position-absolute" style="top: 10px; right: 10px; background-color: #dc3545; color: white; padding: 5px; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 0.8em; transform: rotate(45deg);">
+              Sale!
+            </div>
+          <% end %>
+          <%= image_tag(product.images.first, class: 'card-img-top') if product.images.attached? %>
+          <div class="card-body">
+            <h5 class="card-title">
+              <%= link_to product.name, product_path(product), class: 'text-primary stretched-link' %>
+            </h5>
+            <p class="card-text"><%= product.description %></p>
+          </div>
+          <div class="card-footer bg-white border-0">
+            <a class="btn btn-primary" href="<%= product_path(product) %>">Buy</a>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="row">
+  <div class="col-12 text-center">
+    <%= paginate @products %>
+  </div>
+</div>
 
 <%= link_to 'Back', :back, class: "back-link" %>

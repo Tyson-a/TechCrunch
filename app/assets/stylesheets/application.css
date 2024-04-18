@@ -11,12 +11,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
-    color: #007bff;
+    color: black;
     text-decoration: none; 
     
     &:hover, &:focus {
-      color: #0056b3;
-      text-decoration: underline;
+      color: green;
+      text-decoration: none;
     }
   }
 
@@ -53,7 +53,7 @@ input, select, textarea {
   background-color: #343a40; 
   border-bottom: 3px solid #007bff;
   .navbar-brand {
-    color: #007bff; 
+    color: black; 
     font-weight: bold;
     &:hover {
       color: #0056b3; 
@@ -104,3 +104,80 @@ input, select, textarea {
     /* Add more styles for your 'On Sale' badge */
   }
   
+  .flash {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    background-color: #f2f2f2;
+  }
+  
+  .flash.alert {
+    border-color: #f2a;
+    background-color: #f2dede;
+  }
+  
+  .flash.notice {
+    border-color: #a2f;
+    background-color: #dff0d8;
+  }
+  
+  /* Ensure your custom styles don't conflict with Bootstrap */
+.category-link {
+  color: #007bff; /* This should be the color of your links */
+  margin-right: 5px; /* Spacing between category links */
+  text-decoration: none; /* Remove underline from links */
+}
+
+.category-link:hover {
+  text-decoration: underline; /* Add underline on hover for better UX */
+}
+
+.card {
+  transition: transform .3s; /* Smooth transition for hover effect */
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Slight lift effect on hover */
+}
+
+.card-img-top {
+  width: 100%; /* Forces all images to be as wide as their container. */
+  object-fit: cover; /* This will cover the area without stretching the image. */
+  height: 200px; /* Sets a fixed height for all images. Adjust as necessary. */
+}
+.badge-sale {
+  z-index: 1; /* Make sure the badge is above other elements */
+}
+
+.card-title {
+  font-size: 1.1rem; /* Title font size */
+  margin-bottom: .5rem; /* Spacing under the title */
+}
+
+.card-text {
+  font-size: .9rem; /* Description font size */
+  color: #6c757d; /* Muted text color for description */
+}
+
+.card-footer {
+  background-color: #f8f9fa; /* Slightly grey background for the footer */
+  border-top: 1px solid #e3e6f0; /* Add a border to the top of the footer */
+}
+
+.buy-button {
+  width: 100%; /* Full width button */
+  border-radius: 0; /* Square edges for the button */
+  font-weight: bold; /* Make 'Buy' button text bold */
+}
+
+/* Prices styles */
+.original-price {
+  color: #999; /* Greyed out color for original price */
+  text-decoration: line-through; /* Strikethrough for original price */
+}
+
+.sale-price {
+  color: #28a745; /* Bright green color for sale price */
+  font-weight: bold; /* Bold font for emphasis */
+}
+
